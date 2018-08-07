@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+import http.server
+
+import os
+
+
+class MyHandler(http.server.BaseHTTPRequestHandler):
+    def do_HEAD(s):
+        s.send_response(200)
+        s.send_header('Content-type', 'text/html')
+        s.end_headers()
+
+    def do_GET(s):
+        s.send_response(200)
+        s.send_header('Content-type', 'text/html')
+        s.end_headers()
+        s.wfile.write(b'ok')
+
+
+def main():
+    HOST = os.environ.get('HTTPD_STATUS_HOST', '0.0.0.0')
+    PORT = int(os.environ.get('HTTPD_STATUS_PORT', '9999'))
+    httpd = http.server.HTTPServer((HOST, PORT), MyHandler)
+    print('serving at http://{}:{}'.format(HOST, PORT))
+    httpd.serve_forever()
+
+
+if __name__ == '__main__':
+    main()
